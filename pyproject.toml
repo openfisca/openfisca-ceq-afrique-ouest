@@ -32,6 +32,12 @@ dev = [
     "pytest >=8.3.3",
     "ruff >=0.1.0",
 ]
+docs = [
+    "mkdocs >=1.5",
+    "mkdocs-material >=9.5",
+    "mkdocstrings[python] >=0.24",
+    "mkdocs-jupyter",
+]
 
 # Les systèmes socio-fiscaux pays (openfisca-senegal @ ceq, openfisca-mali,
 # openfisca-cote-d-ivoire) épinglent un très vieux openfisca-core ; ils sont
