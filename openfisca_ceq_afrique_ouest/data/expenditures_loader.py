@@ -3,7 +3,7 @@ import pandas as pd
 import slugify
 
 
-from openfisca_ceq.tools.data import config_parser, year_by_country
+from openfisca_ceq_afrique_ouest.data import config_parser, year_by_country
 from openfisca_ceq.tools.indirect_taxation.consumption_items_nomenclature import (
     build_label_by_code_coicop,
 )

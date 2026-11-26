@@ -3,8 +3,8 @@ import pandas as pd
 import pytest
 
 
-from openfisca_ceq.tools.data import year_by_country
-from openfisca_ceq.tools.survey_scenario import build_ceq_survey_scenario
+from openfisca_ceq_afrique_ouest.data import year_by_country
+from openfisca_ceq_afrique_ouest.survey_scenario import build_ceq_survey_scenario
 
 
 log = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     import sys
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    from openfisca_ceq.tools.data_ceq_correspondence import (
+    from openfisca_ceq_afrique_ouest.data_ceq_correspondence import (
         ceq_input_by_harmonized_variable,
         ceq_intermediate_by_harmonized_variable,
         non_ceq_input_by_harmonized_variable,

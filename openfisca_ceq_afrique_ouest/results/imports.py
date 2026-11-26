@@ -19,8 +19,8 @@ def compute_total_ht_imports(survey_scenario):
 
 
 # if __name__ == '__main__':
-# from openfisca_ceq.tools.data import year_by_country
-# from openfisca_ceq.tools.survey_scenario import build_ceq_survey_scenario
+# from openfisca_ceq_afrique_ouest.data import year_by_country
+# from openfisca_ceq_afrique_ouest.survey_scenario import build_ceq_survey_scenario
 #     country = "senegal"
 #     year = year_by_country[country]
 #     survey_scenario = build_ceq_survey_scenario(legislation_country = country, year = year)

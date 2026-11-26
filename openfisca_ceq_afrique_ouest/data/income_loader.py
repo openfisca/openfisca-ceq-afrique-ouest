@@ -2,10 +2,10 @@ import logging
 import pandas as pd
 
 
-from openfisca_ceq.tools.data import config_parser, year_by_country
+from openfisca_ceq_afrique_ouest.data import config_parser, year_by_country
 
 
-from openfisca_ceq.tools.data_ceq_correspondence import (
+from openfisca_ceq_afrique_ouest.data_ceq_correspondence import (
     ceq_input_by_harmonized_variable,
     ceq_intermediate_by_harmonized_variable,
     data_by_model_weight_variable,

@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openfisca-ceq-afrique-ouest"
+version = "0.1.0"
+description = "Études CEQ d'incidence fiscale pour l'Afrique de l'Ouest (Sénégal, Mali, Côte d'Ivoire), appuyées sur le cœur openfisca-ceq."
+readme = "README.md"
+license = { text = "AGPL-3.0-or-later" }
+requires-python = ">=3.11"
+dependencies = [
+    "OpenFisca-CEQ >=2.0.0",
+    "OpenFisca-Survey-Manager >=6.2.0,<7.0",
+    "OpenFisca-Core >=44.0.0,<45.0",
+    "numexpr",
+    "openpyxl",
+    "pandas",
+    "python-slugify",
+    "scipy >=1.10.1,<2.0",
+    "xlrd >=2.0.0",
+]
+
+[project.optional-dependencies]
+notebooks = [
+    "papermill",
+    "jupyter",
+    "ipykernel",
+    "matplotlib >=3.8.0",
+]
+dev = [
+    "pytest >=8.3.3",
+    "ruff >=0.1.0",
+]
+
+# Les systèmes socio-fiscaux pays (openfisca-senegal @ ceq, openfisca-mali,
+# openfisca-cote-d-ivoire) épinglent un très vieux openfisca-core ; ils sont
+# installés séparément en --no-deps (compatibles core 44). Voir documentation/.
+
+[tool.setuptools.packages.find]
+include = ["openfisca_ceq_afrique_ouest*"]
+
+[tool.setuptools.package-data]
+openfisca_ceq_afrique_ouest = ["assets/*"]

@@ -7,14 +7,14 @@ from openfisca_core import periods
 from openfisca_core.model_api import Variable, where, YEAR
 
 from openfisca_survey_manager.scenarios.abstract_scenario import AbstractSurveyScenario
-from openfisca_ceq.tools.tax_benefit_system_ceq_completion import ceq
+from openfisca_ceq_afrique_ouest.ceq_framework import ceq
 from openfisca_ceq.tools.indirect_taxation.tax_benefit_system_indirect_taxation_completion import (
     add_coicop_item_to_tax_benefit_system,
 )
-from openfisca_ceq.tools.data.expenditures_loader import load_expenditures
-from openfisca_ceq.tools.data.income_loader import build_income_dataframes
-from openfisca_ceq.tools.data.income_targets import read_target
-from openfisca_ceq.tools.data_ceq_correspondence import (
+from openfisca_ceq_afrique_ouest.data.expenditures_loader import load_expenditures
+from openfisca_ceq_afrique_ouest.data.income_loader import build_income_dataframes
+from openfisca_ceq_afrique_ouest.data.income_targets import read_target
+from openfisca_ceq_afrique_ouest.data_ceq_correspondence import (
     ceq_input_by_harmonized_variable,
     ceq_intermediate_by_harmonized_variable,
     data_by_model_weight_variable,
@@ -49,6 +49,14 @@ class CEQSurveyScenario(AbstractSurveyScenario):
     data_country = None
     varying_variable = None
 
+    @property
+    def tax_benefit_system(self):
+        # Compat : openfisca-survey-manager >= 6.2 remplace self.tax_benefit_system
+        # (singulier) par self.tax_benefit_systems (dict nommé). On expose un alias
+        # en lecture sur la simulation "baseline" pour le code consommateur (notebooks,
+        # tools/results, …).
+        return self.tax_benefit_systems["baseline"]
+
     def __init__(
         self,
         tax_benefit_system=None,
@@ -62,16 +70,27 @@ class CEQSurveyScenario(AbstractSurveyScenario):
         super(CEQSurveyScenario, self).__init__()
         assert year is not None
         self.year = year
+        # openfisca-survey-manager >= 6.2 : new_simulation lit self.period.
+        self.period = year
 
         assert tax_benefit_system is not None
-        self.set_tax_benefit_systems(
-            tax_benefit_system=tax_benefit_system,
-            baseline_tax_benefit_system=baseline_tax_benefit_system,
-        )
+        # openfisca-survey-manager >= 6.2: set_tax_benefit_systems prend un dict nommé
+        # (plus de self.tax_benefit_system singulier ; voir self.tax_benefit_systems).
+        if baseline_tax_benefit_system is not None:
+            self.set_tax_benefit_systems(
+                tax_benefit_systems={
+                    "reform": tax_benefit_system,
+                    "baseline": baseline_tax_benefit_system,
+                },
+            )
+        else:
+            self.set_tax_benefit_systems(
+                tax_benefit_systems={"baseline": tax_benefit_system},
+            )
 
         if use_marginal_tax_rate:
             assert varying_variable is not None
-            assert varying_variable in self.tax_benefit_system.variables
+            assert varying_variable in self.tax_benefit_systems["baseline"].variables
             self.variation_factor = variation_factor
             self.varying_variable = varying_variable
 
@@ -105,6 +124,14 @@ class CEQSurveyScenario(AbstractSurveyScenario):
 
         self.init_from_data(data=data, use_marginal_tax_rate=use_marginal_tax_rate)
 
+    def compute_pivot_table(self, *args, simulation=None, **kwargs):
+        # openfisca-survey-manager >= 6.2 : compute_pivot_table n'auto-résout pas
+        # simulation=None (contrairement à compute_aggregate). On défaute sur l'unique
+        # simulation quand il n'y en a qu'une, pour garder les notebooks inchangés.
+        if simulation is None and len(self.simulations) == 1:
+            simulation = next(iter(self.simulations.keys()))
+        return super().compute_pivot_table(*args, simulation=simulation, **kwargs)
+
     def inflate_to_match_gross_valued_added_and_consumption(self):
         country = self.data_country
         gross_value_added_target = read_target(country, "gross_value_added")
@@ -133,7 +160,7 @@ class CEQSurveyScenario(AbstractSurveyScenario):
         )
         consumption_variables = [
             _variable
-            for _variable in self.tax_benefit_system.variables
+            for _variable in self.tax_benefit_systems["baseline"].variables
             if _variable.startswith("poste_")
         ]
         self.inflate_variables_sum_to_target(
@@ -146,7 +173,7 @@ class CEQSurveyScenario(AbstractSurveyScenario):
         self, target_variables, target, period, target_variable_by_input_variable=dict()
     ):
         for target_variable in target_variables:
-            assert target_variable in self.tax_benefit_system.variables
+            assert target_variable in self.tax_benefit_systems["baseline"].variables
 
         aggregate_by_variable = dict(
             (
@@ -201,19 +228,20 @@ class CEQSurveyScenario(AbstractSurveyScenario):
     def reach_target(
         self, variable, target, input_variable, period, inflator_first_guess=1.1
     ):
-        initial_input_array = self.simulation.calculate_add(
+        simulation = self.simulations["baseline"]
+        initial_input_array = simulation.calculate_add(
             input_variable, period=period
         )
 
         def compute_error(inflator):
             input_array = inflator * initial_input_array
-            self.simulation.delete_arrays(
+            simulation.delete_arrays(
                 variable, period=period
             )  # delete existing arrays
-            self.simulation.delete_arrays(
+            simulation.delete_arrays(
                 input_variable, period=period
             )  # delete existing arrays
-            self.simulation.set_input(
+            simulation.set_input(
                 input_variable, period, input_array
             )  # insert inflated array
 
@@ -228,9 +256,9 @@ class CEQSurveyScenario(AbstractSurveyScenario):
                 input_variable, result, variable, target
             )
         )
-        self.simulation.delete_arrays(variable, period=period)
-        self.simulation.delete_arrays(input_variable, period=period)
-        self.simulation.set_input(input_variable, period, result * initial_input_array)
+        simulation.delete_arrays(variable, period=period)
+        simulation.delete_arrays(input_variable, period=period)
+        simulation.set_input(input_variable, period, result * initial_input_array)
 
 
 def build_ceq_data(country, year=None):

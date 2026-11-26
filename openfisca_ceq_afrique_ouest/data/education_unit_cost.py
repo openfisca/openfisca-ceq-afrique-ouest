@@ -1,11 +1,13 @@
+import importlib.resources
 import logging
 import pandas as pd
 import os
 import slugify
 
 
-from openfisca_ceq.tools.indirect_taxation.consumption_items_nomenclature import (
-    assets_directory,
+# Les coûts unitaires d'éducation sont un asset propre à l'étude Afrique de l'Ouest.
+assets_directory = str(
+    importlib.resources.files("openfisca_ceq_afrique_ouest") / "assets"
 )
 
 

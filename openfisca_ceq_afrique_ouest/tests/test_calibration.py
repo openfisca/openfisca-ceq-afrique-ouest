@@ -5,9 +5,9 @@ from pprint import pformat
 import pytest
 import sys
 
-from openfisca_ceq.tools.data import year_by_country
-from openfisca_ceq.tools.survey_scenario import build_ceq_survey_scenario
-from openfisca_ceq.tools.data.income_targets import read_target
+from openfisca_ceq_afrique_ouest.data import year_by_country
+from openfisca_ceq_afrique_ouest.survey_scenario import build_ceq_survey_scenario
+from openfisca_ceq_afrique_ouest.data.income_targets import read_target
 
 
 log = logging.getLogger(__name__)

@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: openfisca-ceq-afrique-ouest
+Version: 0.1.0
+Summary: Études CEQ d'incidence fiscale pour l'Afrique de l'Ouest (Sénégal, Mali, Côte d'Ivoire), appuyées sur le cœur openfisca-ceq.
+License: AGPL-3.0-or-later
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE.AGPL.txt
+Requires-Dist: OpenFisca-CEQ>=2.0.0
+Requires-Dist: OpenFisca-Survey-Manager<7.0,>=6.2.0
+Requires-Dist: OpenFisca-Core<45.0,>=44.0.0
+Requires-Dist: numexpr
+Requires-Dist: openpyxl
+Requires-Dist: pandas
+Requires-Dist: python-slugify
+Requires-Dist: scipy<2.0,>=1.10.1
+Requires-Dist: xlrd>=2.0.0
+Provides-Extra: notebooks
+Requires-Dist: papermill; extra == "notebooks"
+Requires-Dist: jupyter; extra == "notebooks"
+Requires-Dist: ipykernel; extra == "notebooks"
+Requires-Dist: matplotlib>=3.8.0; extra == "notebooks"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.3; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: license-file

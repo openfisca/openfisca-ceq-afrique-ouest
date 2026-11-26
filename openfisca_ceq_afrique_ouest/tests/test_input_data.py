@@ -4,8 +4,8 @@ import pytest
 
 import logging
 
-from openfisca_ceq.tools.data import get_data_file_paths
-from openfisca_ceq.tools.data import year_by_country
+from openfisca_ceq_afrique_ouest.data import get_data_file_paths
+from openfisca_ceq_afrique_ouest.data import year_by_country
 
 
 log = logging.getLogger(__name__)

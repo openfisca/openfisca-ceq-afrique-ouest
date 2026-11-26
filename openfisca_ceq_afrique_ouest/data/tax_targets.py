@@ -2,12 +2,12 @@ import logging
 import pandas as pd
 
 
-from openfisca_ceq.tools.data import config_parser
+from openfisca_ceq_afrique_ouest.data import config_parser
 
 # from openfisca_ceq.tools.indirect_taxation.consumption_items_nomenclature import country_code_by_country
-from openfisca_ceq.tools.survey_scenario import build_ceq_survey_scenario
-from openfisca_ceq.tools.data import year_by_country
-from openfisca_ceq.tools.results.imports import compute_total_ht_imports
+from openfisca_ceq_afrique_ouest.survey_scenario import build_ceq_survey_scenario
+from openfisca_ceq_afrique_ouest.data import year_by_country
+from openfisca_ceq_afrique_ouest.results.imports import compute_total_ht_imports
 
 
 log = logging.getLogger(__name__)
