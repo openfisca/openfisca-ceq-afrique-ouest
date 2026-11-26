@@ -86,3 +86,31 @@ branche `scission-core`.
 données et de packages pays en local** (blocage externe, pas de code à écrire). Options :
 (a) fournir les données + packages pour une validation complète ; (b) se rabattre sur une
 validation *mécanique* (import du dépôt, câblage papermill, tout sauf l'exécution data).
+
+## Reste à faire (backlog scission)
+
+- **Phase 4 — ceq-tunisie** (quand le cœur 2.0 sera publié/adopté) :
+  - relock sur `openfisca-ceq >= 2.0` ;
+  - corriger `tests/unit/test_openfisca_ceq_import.py` : il importe
+    `openfisca_ceq.tools.data_ceq_correspondence` (module parti aux études en 2.0) —
+    le repointer sur un module du cœur (p. ex. vérifier le chargement des 72 variables).
+  - Impact code attendu : nul (ceq-tunisie ne consomme que `CountryTaxBenefitSystem`).
+- **Publication / push** (non fait, décision à prendre) :
+  - `openfisca-ceq` : la scission vit sur la branche `scission-core` (PR + merge + release 2.0.0) ;
+  - `openfisca-ceq-afrique-ouest` : dépôt local sans remote (créer le dépôt GitHub + push) ;
+  - figer `uv.lock` côté études.
+- **Générateur indirect** (`tools/indirect_taxation/consumption_items_nomenclature.py`, cœur) :
+  code encore `country_code_by_country` (MLI/SEN/CIV) en dur — à paramétrer (pays + chemin)
+  pour un cœur pleinement agnostique.
+- **Packages pays** : installés depuis GitHub en `--no-deps` (`openfisca-senegal@ceq`,
+  `-mali@master`, `-cote-d-ivoire@master`, compat core 44) — à déclarer/épingler proprement.
+
+## Changements d'environnement effectués (machine benjello)
+
+- `~/.config/openfisca-survey-manager/raw_data.ini` : sauvegarde `.bak-scission` ; ajout
+  des sections `[ceq]` (`consumption_items_directory`, `targets_file`), `[senegal]`,
+  `[mali]`, `[cote_d_ivoire]`.
+- Kernels Jupyter installés : `ceq-venv`, `ceqao-venv`.
+- Commits : cœur `openfisca-ceq` master `819eae5` (bugfix éducation) ; branche
+  `scission-core` `351fd25` (API générique) + `4dc274c` (élagage + 2.0.0) ;
+  dépôt études `fc167ee` (restructure) + `.gitignore`.
