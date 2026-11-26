@@ -1,0 +1,48 @@
+site_name: OpenFisca CEQ — Études Afrique de l'Ouest
+site_description: >-
+  Documentation des études Commitment to Equity (CEQ) d'Afrique de l'Ouest
+  (Côte d'Ivoire, Mali, Sénégal), bâties sur le cœur openfisca-ceq.
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - Accueil: index.md
+  - Données:
+    - Vue d'ensemble: donnees/index.md
+    - Description des tables d'entrée: donnees/description_donnees_input.md
+  - Pipeline: pipeline.md
+  - Notebooks: notebooks.md
+  - Référence d'API: reference.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path:
+        - .
+      check_paths: true
+
+plugins:
+  - search
+  - mkdocs-jupyter:
+      include_source: true
+      execute: false
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            show_root_heading: true
+            show_if_no_docstring: true
+            members_order: source
