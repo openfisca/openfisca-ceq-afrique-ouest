@@ -23,21 +23,29 @@ from openfisca_ceq_afrique_ouest.data_ceq_correspondence import (
     other_model_by_harmonized_person_variable,
 )
 
-from openfisca_cote_d_ivoire import (
-    CountryTaxBenefitSystem as CoteDIvoireTaxBenefitSystem,
-)
-from openfisca_mali import CountryTaxBenefitSystem as MaliTaxBenefitSystem
-from openfisca_senegal import CountryTaxBenefitSystem as SenegalTaxBenefitSystem
-
-
 log = logging.getLogger(__name__)
 
 
-tax_benefit_system_class_by_country = dict(
-    cote_d_ivoire=CoteDIvoireTaxBenefitSystem,
-    mali=MaliTaxBenefitSystem,
-    senegal=SenegalTaxBenefitSystem,
-)
+def country_tax_benefit_system_class(country):
+    """Classe TBS du package pays, importée paresseusement.
+
+    Les packages pays (openfisca-senegal / -mali / -cote-d-ivoire) sont des
+    dépendances lourdes et optionnelles : on n'importe que celui demandé, pour
+    pouvoir travailler sur un seul pays sans avoir les trois installés.
+    """
+    if country == "senegal":
+        from openfisca_senegal import CountryTaxBenefitSystem
+    elif country == "mali":
+        from openfisca_mali import CountryTaxBenefitSystem
+    elif country == "cote_d_ivoire":
+        from openfisca_cote_d_ivoire import CountryTaxBenefitSystem
+    else:
+        raise ValueError(
+            "Pays inconnu : {!r} (attendu : senegal, mali, cote_d_ivoire).".format(
+                country
+            )
+        )
+    return CountryTaxBenefitSystem
 
 
 class CEQSurveyScenario(AbstractSurveyScenario):
@@ -493,9 +501,9 @@ def build_ceq_survey_scenario(
     if data_country is None:
         data_country = legislation_country
 
-    CountryTaxBenefitSystem = tax_benefit_system_class_by_country[legislation_country]
+    CountryTaxBenefitSystem = country_tax_benefit_system_class(legislation_country)
     CountryTaxBenefitSystem.legislation_country = legislation_country
-    tax_benefit_system = ceq(CountryTaxBenefitSystem(coicop=False))
+    tax_benefit_system = ceq(CountryTaxBenefitSystem())
     add_coicop_item_to_tax_benefit_system(tax_benefit_system, legislation_country)
     if adjust_indirect_taxation:
         from openfisca_ceq.entities import Household
